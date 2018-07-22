@@ -250,8 +250,8 @@ function RollerShutter(accesory, log, config) {
 	
 	wpi.pinMode(this.openPin, wpi.OUTPUT);
 	wpi.pinMode(this.closePin, wpi.OUTPUT);
-	wpi.digitalWrite(this.openPin, wpi.LOW);
-	wpi.digitalWrite(this.closePin, wpi.LOW);
+	wpi.digitalWrite(this.openPin, wpi.HIGH);
+	wpi.digitalWrite(this.closePin, wpi.HIGH);
 	
 	this.posCharac = this.service.getCharacteristic(Characteristic.CurrentPosition)
 		.updateValue(this.initPosition);
@@ -300,7 +300,7 @@ RollerShutter.prototype = {
 	},
 	
 	motionEnd: function() {
-		if(this.shift.target < 100 && this.shift.target > 0) {
+		if(this.shift.target <= 100 && this.shift.target >= 0) {
 			this.pinPulse(this.shift.value); // Stop shutter by pulsing same pin another time
 		}
 		this.posCharac.updateValue(this.shift.target);
@@ -315,8 +315,8 @@ RollerShutter.prototype = {
 		var pin = shiftValue > 0 ? this.openPin : this.closePin;
 		this.log('Pulse pin ' + pin);
 		this.shift.start = Date.now();
-		wpi.digitalWrite(pin, wpi.HIGH);
-		wpi.delay(200);
 		wpi.digitalWrite(pin, wpi.LOW);
+		wpi.delay(200);
+		wpi.digitalWrite(pin, wpi.HIGH);
 	}
 }
